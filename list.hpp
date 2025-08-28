@@ -22,8 +22,8 @@ class List {
 
 	void push_back(int value);
 	void pop_back();
-	void front();
-	void back();
+	int front();
+	int back();
 
 	void push_front(int value);
 	void pop_front();

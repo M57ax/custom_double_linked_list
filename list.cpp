@@ -1,6 +1,7 @@
 #include "list.hpp"
 
 #include <iostream>
+#include <stdexcept>
 
 List::List() : begin(nullptr), end(nullptr), m_size(0){} 
 
@@ -63,16 +64,20 @@ void List::pop_front() {
     delete toDelete;
 }
 
-void List::front() {
+int List::front() {
     if (!begin) {
-        std::cout << "Liste ist leer" << std::endl;
+        throw std::runtime_error("Liste ist leer");
     } else {
-    std::cout << "Startwert: " << begin->data << std::endl;
+    return begin->data;
     }
 }
 
-void List::back() {
-    std::cout << "Endwert: " << end->data << std::endl;
+int List::back() {
+    if (!end) {
+        throw std::runtime_error("Liste ist leer");
+    } else {
+        return end->data;
+    }
 }
 
 void List::print() {
