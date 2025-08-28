@@ -5,8 +5,8 @@ A doubly linked list is a dynamic data structure where each node stores a value 
 
 ## With this structure you can:
 
-Insert and remove elements efficiently at both ends and in the middle of the list.
+Insert and remove elements efficiently at both ends ~~and in the middle~~ of the list.
 
-Traverse the list forward and backward.
+~~Traverse the list forward and backward.~~
 
 Manage memory manually for learning purposes, without relying on std::list.
