@@ -31,29 +31,44 @@ void List::push_front(int value) {
 }
 
 void List::pop_back() {
+    if (!end) {
+        return ;
+    }
     Node* toDelete = end;
     Node* newEnd = end->prev;
     if (newEnd) {
         newEnd->next = nullptr;      //end hat kein nachfolger mehr
         end = newEnd; 
+    } else {
+        begin = nullptr;
+        end = nullptr;
     }
     m_size--;
+    delete toDelete;
 }
 
 void List::pop_front() {
+    if (!begin) {return;}
     Node* toDelete = begin;
     Node* newBegin = begin->next;
 
     if(newBegin) {
         newBegin->prev = nullptr;
         begin = newBegin;
+    } else {
+        begin = nullptr;
+        end = nullptr;
     }
     m_size--;
     delete toDelete;
 }
 
 void List::front() {
+    if (!begin) {
+        std::cout << "Liste ist leer" << std::endl;
+    } else {
     std::cout << "Startwert: " << begin->data << std::endl;
+    }
 }
 
 void List::back() {
