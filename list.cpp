@@ -4,16 +4,37 @@
 #include <iostream>
 #include <stdexcept>
 
-List::List() : begin(nullptr), end(nullptr), m_size(0) {} 
+List::List() : head(nullptr), tail(nullptr), m_size(0) {} 
+
+void List::clear() {
+    Node* currentVal = head;
+    while (currentVal) {
+        Node* next = currentVal->next;
+        delete currentVal;
+        currentVal = next;
+    }
+    head = nullptr;
+    tail = nullptr;
+    m_size = 0;
+}
+
+void List::copyFrom(const List& other) {
+    Node* currentOth = other.head;
+    while (currentOth) {
+        int val = currentOth->data;
+        push_back(val);
+        currentOth = currentOth->next;
+    }
+}
 
 bool List::operator==(const List& other) const {
     if (m_size != other.m_size) {
         std::cout << "Listen sind nicht gleich" << std::endl;
         return false;
-        
     } 
-    Node* a = begin;
-    Node* b = other.begin;
+
+    Node* a = head;
+    Node* b = other.head;
     while ( a && b) {
         if( a->data != b->data ) {
             std::cout << "UNGLEICH" << std::endl;
@@ -26,79 +47,57 @@ bool List::operator==(const List& other) const {
     std::cout << "Gleich" << std::endl;
     return true;
 }
-// Mein Fehler war, dass ich es nicht geschnallt habe, dass L2 hier ja der linken seite ist.
-// So wird nun erstmal L2 leer geräumt, (wie bei destruktor).
-// 
+
 List& List::operator=(const List& other) {
     std::cout << "Assign" << std::endl;
-    Node* currentVal = begin;
-    while (currentVal) {
-        Node* next = currentVal->next;
-        delete currentVal;
-        currentVal = next;
-    }
-    begin = nullptr;
-    end = nullptr;
-    m_size = 0; 
-
-    Node* currentOth = other.begin;
-    while (currentOth) {
-        int val = currentOth->data;
-        push_back(val);
-        currentOth = currentOth->next;
-    }
+    clear();
+    copyFrom(other);
     return *this;
-    
 }
 
 List::List(const List& other) {
     std::cout << "Copy" << std::endl;
-    Node* currentOth = other.begin;
-    while (currentOth) {
-        int val = currentOth->data;
-        push_back(val);
-        currentOth = currentOth->next;
-    }
+    copyFrom(other);
 }
 
 void List::push_back(int value) {
     Node* newNode = new Node(value); // legt objekt in heap an und eben zeiger auf erzeuge node
-    if (!begin) {
-        begin = newNode;    
-        end = newNode;
+    if (!head) {
+        head = newNode;    
+        tail = newNode;
     } else {
-        newNode->prev = end;
-        end->next = newNode;
-        end = newNode;
+        newNode->prev = tail;
+        tail->next = newNode;
+        tail = newNode;
     }
     m_size++;
 }
 
 void List::push_front(int value) {
     Node* newNode = new Node(value);
-    if (!begin) {
-        begin = newNode;
-        end = newNode;
+    if (!head) {
+        head = newNode;
+        tail = newNode;
     } else {
-        newNode->next = begin; //neu zeigt auf alten
-        begin->prev = newNode; //alt zeigt auf neu
-        begin = newNode; //anfang dem neuen zuweisen 
+        newNode->next = head; //neu zeigt auf alten
+        head->prev = newNode; //alt zeigt auf neu
+        head = newNode; //anfang dem neuen zuweisen 
     }
     m_size++;
 }
 
 void List::pop_back() {
-    if (!end) {
+    if (!tail) {
         return ;
     }
-    Node* toDelete = end;
-    Node* newEnd = end->prev;
+    Node* toDelete = tail;
+    Node* newEnd = tail->prev;
     if (newEnd) {
         newEnd->next = nullptr;      //end hat kein nachfolger mehr
-        end = newEnd; 
+        tail = newEnd; 
     } else {
-        begin = nullptr;
-        end = nullptr;
+        head = nullptr;
+        tail = nullptr;
     }
     m_size--;
     delete toDelete;
@@ -106,43 +105,43 @@ void List::pop_back() {
 
 void List::insert_at(int pos, int value) {
     Node* newNode = new Node(value);
-    Node* current = begin;
+    Node* current = head;
 }
 
 void List::pop_front() {
-    if (!begin) {return;}
-    Node* toDelete = begin;
-    Node* newBegin = begin->next;
+    if (!head) {return;}
+    Node* toDelete = head;
+    Node* newBegin = head->next;
 
     if(newBegin) {
         newBegin->prev = nullptr;
-        begin = newBegin;
+        head = newBegin;
     } else {
-        begin = nullptr;
-        end = nullptr;
+        head = nullptr;
+        tail = nullptr;
     }
     m_size--;
     delete toDelete;
 }
 
 int List::front() {
-    if (!begin) {
+    if (!head) {
         throw std::runtime_error("Liste ist leer");
     } else {
-    return begin->data;
+    return head->data;
     }
 }
 
 int List::back() {
-    if (!end) {
+    if (!tail) {
         throw std::runtime_error("Liste ist leer");
     } else {
-        return end->data;
+        return tail->data;
     }
 }
 
 void List::print() {
-    Node* currentVal = begin;
+    Node* currentVal = head;
     while (currentVal) {
         std::cout << currentVal->data << " ";
         currentVal = currentVal->next;
@@ -156,13 +155,5 @@ void List::size() {
 }
 
 List::~List() {
-    Node* currentVal = begin;
-    while (currentVal) {
-        Node* next = currentVal->next;
-        delete currentVal;
-        currentVal = next;
-    }
-    begin = nullptr;
-    end = nullptr;
-    m_size = 0;
+    clear();
 }
