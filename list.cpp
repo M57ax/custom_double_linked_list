@@ -1,9 +1,65 @@
 #include "list.hpp"
 
+#include <cstddef>
 #include <iostream>
 #include <stdexcept>
 
-List::List() : begin(nullptr), end(nullptr), m_size(0){} 
+List::List() : begin(nullptr), end(nullptr), m_size(0) {} 
+
+bool List::operator==(const List& other) const {
+    if (m_size != other.m_size) {
+        std::cout << "Listen sind nicht gleich" << std::endl;
+        return false;
+        
+    } 
+    Node* a = begin;
+    Node* b = other.begin;
+    while ( a && b) {
+        if( a->data != b->data ) {
+            std::cout << "UNGLEICH" << std::endl;
+            return false;
+        } else {
+            a = a->next;
+            b = b->next;
+        }
+    } 
+    std::cout << "Gleich" << std::endl;
+    return true;
+}
+// Mein Fehler war, dass ich es nicht geschnallt habe, dass L2 hier ja der linken seite ist.
+// So wird nun erstmal L2 leer geräumt, (wie bei destruktor).
+// 
+List& List::operator=(const List& other) {
+    std::cout << "Assign" << std::endl;
+    Node* currentVal = begin;
+    while (currentVal) {
+        Node* next = currentVal->next;
+        delete currentVal;
+        currentVal = next;
+    }
+    begin = nullptr;
+    end = nullptr;
+    m_size = 0; 
+
+    Node* currentOth = other.begin;
+    while (currentOth) {
+        int val = currentOth->data;
+        push_back(val);
+        currentOth = currentOth->next;
+    }
+    return *this;
+    
+}
+
+List::List(const List& other) {
+    std::cout << "Copy" << std::endl;
+    Node* currentOth = other.begin;
+    while (currentOth) {
+        int val = currentOth->data;
+        push_back(val);
+        currentOth = currentOth->next;
+    }
+}
 
 void List::push_back(int value) {
     Node* newNode = new Node(value); // legt objekt in heap an und eben zeiger auf erzeuge node
@@ -46,6 +102,11 @@ void List::pop_back() {
     }
     m_size--;
     delete toDelete;
+}
+
+void List::insert_at(int pos, int value) {
+    Node* newNode = new Node(value);
+    Node* current = begin;
 }
 
 void List::pop_front() {
@@ -92,4 +153,16 @@ void List::print() {
 
 void List::size() {
     std::cout << "Die größe der Liste beträgt: " << m_size << std::endl;
+}
+
+List::~List() {
+    Node* currentVal = begin;
+    while (currentVal) {
+        Node* next = currentVal->next;
+        delete currentVal;
+        currentVal = next;
+    }
+    begin = nullptr;
+    end = nullptr;
+    m_size = 0;
 }
