@@ -50,5 +50,6 @@ class List {
 	void size();
 	void clear();
 	void copyFrom(const List& other);
+	void iteration();
 
 };

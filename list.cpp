@@ -60,6 +60,13 @@ List::List(const List& other) {
     copyFrom(other);
 }
 
+void List::iteration() {
+    for (auto l = this->begin(); l != this->end(); ++l ) {
+        std::cout << "Member: " << *l << " ";
+        
+    }
+}
+
 void List::push_back(int value) {
     Node* newNode = new Node(value); // legt objekt in heap an und eben zeiger auf erzeuge node
     if (!head) {
