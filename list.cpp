@@ -17,7 +17,7 @@ void List::clear() {
     tail = nullptr;
     m_size = 0;
 }
-
+// nicht
 void List::copyFrom(const List& other) {
     Node* currentOth = other.head;
     while (currentOth) {
@@ -48,6 +48,10 @@ bool List::operator==(const List& other) const {
     return true;
 }
 
+bool List::operator!=(const List& other) const {
+    return !(*this == other);
+}
+
 List& List::operator=(const List& other) {
     std::cout << "Assign" << std::endl;
     clear();
@@ -60,12 +64,7 @@ List::List(const List& other) {
     copyFrom(other);
 }
 
-void List::iteration() {
-    for (auto l = this->begin(); l != this->end(); ++l ) {
-        std::cout << "Member: " << *l << " ";
-        
-    }
-}
+
 
 void List::push_back(int value) {
     Node* newNode = new Node(value); // legt objekt in heap an und eben zeiger auf erzeuge node
@@ -110,10 +109,78 @@ void List::pop_back() {
     delete toDelete;
 }
 
-void List::insert_at(int pos, int value) {
+// void List::insert_at(int pos, int value) {
+//     if (pos <= 0) { 
+//         push_front(value); //schmeißt fehler
+//         return;
+//     }
+//     if (pos >= m_size) {
+//         push_back(value);
+//         return;
+//     }
+    
+//     Node* current = head;
+    
+//     for (int i = 0; i < pos; i++) {
+//         current = current->next;
+//     }
+//     Node* newNode = new Node(value);
+//     Node* prev = current->prev;
+// //Hatte Coredump aufgrund von Falscher Poisition des prev Nodes, da zufüh gesetzt
+//     newNode->next = current;
+//     newNode->prev = prev;
+//     prev->next = newNode;
+//     current->prev = newNode;
+
+//     m_size++;
+// }
+
+void List::insertVal(Iterator it, int value) {
+    if (it.ptr == head) { 
+        push_front(value); //soll fehler schmeißen
+        throw std::runtime_error("Liste ist leer");
+        return;
+    }
+    if (it.ptr == nullptr) {
+        push_back(value);
+        throw std::runtime_error("Liste ist leer");
+        return;
+    }
+    Node* current = it.ptr;
     Node* newNode = new Node(value);
-    Node* current = head;
+    Node* prev = current->prev;
+
+    newNode->next = current;
+    newNode->prev = prev;
+    prev->next = newNode;
+    current->prev = newNode;
+
+    m_size++;
 }
+
+void List::deleteVal(Iterator it) {
+    if (m_size == 0) {
+        throw std::runtime_error("Liste ist leer");
+        return;
+    } 
+    Node* current = it.ptr;
+    Node* next = current->next; 
+    Node* prev = current->prev;
+
+    if (prev != nullptr) {
+        prev->next = next; // somit wird current übersprungen und verkette vorgänger mit nachfolger
+    }
+    else head = next; // current war der kopf, jetzt is es aber next
+
+    if (next != nullptr) {
+        next->prev = prev;  // wieder verkettung von nachfolger und vorgänger
+    }
+    else tail = prev; //current war der tail, jetzt ist es aber prev.
+    delete current;
+    --m_size;
+}
+
+
 
 void List::pop_front() {
     if (!head) {return;}
@@ -135,7 +202,7 @@ int List::front() {
     if (!head) {
         throw std::runtime_error("Liste ist leer");
     } else {
-    return head->data;
+        return head->data;
     }
 }
 
@@ -157,8 +224,8 @@ void List::print() {
 }
 
 
-void List::size() {
-    std::cout << "Die größe der Liste beträgt: " << m_size << std::endl;
+int List::size() {
+    return m_size;
 }
 
 List::~List() {
