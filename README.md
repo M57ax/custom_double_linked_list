@@ -10,3 +10,11 @@ Insert and remove elements efficiently at both ends ~~and in the middle~~ of the
 ~~Traverse the list forward and backward.~~
 
 Manage memory manually for learning purposes, without relying on std::list.
+
+## How to start
+
+cmake -S . -B build -G Ninja
+cd build
+ninja
+./main
+
