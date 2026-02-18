@@ -13,8 +13,8 @@ Manage memory manually for learning purposes, without relying on std::list.
 
 ## How to start
 
-cmake -S . -B build -G Ninja
-cd build
-ninja
-./main
+- cmake -S . -B build -G Ninja
+- cd build
+- ninja
+- ./main
 
